@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI-Помощник Туриста</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <!-- <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-o9N1jG8XS9qMQpUg65fHE8xB2KIkB3IrZd2xl48lbyg="
+      crossorigin=""
+    /> -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+  </head>
+  
+  <body>
+    <main class="container">
+      <section class="panel" id="form-panel">
+        <h1>AI-помощник туриста</h1>
+        <form id="itinerary-form">
+          <label>
+            Интересы (через запятую)
+            <input type="text" id="interests" placeholder="стрит-арт, кофейни, панорамы" required />
+          </label>
+          <label>
+            Время на прогулку (часы)
+            <input type="number" id="hours" min="0.5" step="0.5" value="2" required />
+          </label>
+          <label>
+            Текущее местоположение
+            <input type="text" id="location" placeholder="Нижний Новгород, пл. Минина" required />
+          </label>
+          <button type="submit">Построить маршрут</button>
+        </form>
+      </section>
+
+      <section class="panel" id="results-panel" hidden>
+        <h2>Предложенный маршрут</h2>
+        <p id="summary"></p>
+        <div id="map" class="map" hidden></div>
+        <ul id="notes" class="notes" hidden></ul>
+        <ul id="stops"></ul>
+        <form id="feedback-form" class="feedback-form" hidden>
+          <h3>Обратная связь</h3>
+          <label>
+            Оценка маршрута
+            <select id="feedback-rating" required>
+              <option value="">Выберите оценку</option>
+              <option value="5">5 — идеально</option>
+              <option value="4">4 — почти отлично</option>
+              <option value="3">3 — неплохо</option>
+              <option value="2">2 — есть вопросы</option>
+              <option value="1">1 — не подошёл</option>
+            </select>
+          </label>
+          <label>
+            Комментарий (необязательно)
+            <textarea id="feedback-comment" rows="3" placeholder="Что стоит улучшить или что понравилось"></textarea>
+          </label>
+          <button type="submit">Отправить отзыв</button>
+          <p id="feedback-status" class="feedback-status" hidden></p>
+        </form>
+      </section>
+    </main>
+
+    <template id="stop-template">
+      <li class="stop-card">
+        <div class="stop-header">
+          <h3 class="stop-name"></h3>
+          <span class="stop-timing"></span>
+        </div>
+        <p class="stop-address"></p>
+        <p class="stop-reason"></p>
+      </li>
+    </template>
+
+    <!-- <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-o9N1jG8XS9qMQpUg65fHE8xB2KIkB3IrZd2xl48lbyg="
+      crossorigin=""
+    ></script> -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="/static/app.js" type="module"></script>
+  </body>
+</html>
