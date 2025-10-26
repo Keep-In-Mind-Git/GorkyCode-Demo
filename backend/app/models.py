@@ -36,6 +36,8 @@ class ItineraryResponse(BaseModel):
     total_duration_minutes: int
     stops: List[ItineraryStop]
     notes: Optional[List[str]] = None
+    user_latitude: float
+    user_longitude: float
 
 
 @dataclass(slots=True)

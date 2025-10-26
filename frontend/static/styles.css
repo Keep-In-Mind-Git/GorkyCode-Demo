@@ -8,6 +8,7 @@ body {
   background: radial-gradient(circle at top, #f4f6ff, #dde2f5);
   min-height: 100vh;
   display: flex;
+  flex-direction: column; /* Changed to column for footer */
   align-items: center;
   justify-content: center;
   padding: 2rem;
@@ -133,6 +134,14 @@ button:active {
   box-shadow: 0 4px 8px rgba(76, 29, 149, 0.35);
 }
 
+.user-marker {
+  background: #16a34a;
+}
+
+.user-marker span {
+  font-size: 1.2rem;
+}
+
 .feedback-form {
   margin-top: 2rem;
   display: flex;
@@ -175,7 +184,7 @@ form.loading {
   border-radius: 16px;
   padding: 1.2rem;
   background: rgba(99, 102, 241, 0.08);
-  border: 1px solid rgba(99, 102, 241, 0.16);
+  border: 1px solid rgba(99, 102, 241, 0.1);
 }
 
 .stop-header {
@@ -207,6 +216,23 @@ form.loading {
   color: #4b5563;
 }
 
+.footer {
+  text-align: center;
+  padding: 1rem;
+  color: #4b5563;
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+.footer a {
+  color: #4338ca;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 680px) {
   body {
     padding: 1.5rem;
@@ -215,4 +241,8 @@ form.loading {
   .panel {
     padding: 1.5rem;
   }
+}
+
+.leaflet-right {
+  display: none !important;
 }

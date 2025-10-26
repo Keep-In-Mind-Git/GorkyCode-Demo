@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI-Помощник Туриста</title>
-    <link rel="stylesheet" href="/static/styles.css" />
     <!-- <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -17,12 +16,27 @@
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin=""
     />
+    <link rel="stylesheet" href="/static/styles.css" />
   </head>
   
   <body>
     <main class="container">
       <section class="panel" id="form-panel">
         <h1>AI-помощник туриста</h1>
+        <div class="description">
+          <p>
+            Откройте Нижний Новгород с новой стороны! Забудьте о стандартных
+            путеводителях и часах планирования. Наш AI-помощник создаст для вас
+            уникальный маршрут по городу, основанный на ваших интересах и
+            доступном времени.
+          </p>
+          <p>
+            Откройте для себя скрытые жемчужины, уютные кофейни и
+            захватывающие панорамы, которые соответствуют именно вашим
+            предпочтениям. Просто ответьте на три вопроса, и мы построим
+            идеальную прогулку для вас.
+          </p>
+        </div>
         <form id="itinerary-form">
           <label>
             Интересы (через запятую)
@@ -91,5 +105,10 @@
       crossorigin=""
     ></script>
     <script src="/static/app.js" type="module"></script>
+    <footer class="footer">
+      <p>
+        Создано командой <a href="https://keep-in-mind.ru" target="_blank" rel="noopener noreferrer">Keep In Mind</a>
+      </p>
+    </footer>
   </body>
 </html>

@@ -63,7 +63,7 @@ function ensureMap() {
   markersLayer = leafletApi.layerGroup().addTo(mapInstance);
 }
 
-function renderMap(stops) {
+function renderMap(data) {
   if (!mapNode) {
     return;
   }
@@ -77,7 +77,7 @@ function renderMap(stops) {
     return;
   }
 
-  if (!Array.isArray(stops) || stops.length === 0) {
+  if (!data || !Array.isArray(data.stops) || data.stops.length === 0) {
     mapNode.classList.remove("visible");
     mapNode.hidden = true;
     if (markersLayer) {
@@ -90,9 +90,28 @@ function renderMap(stops) {
   markersLayer.clearLayers();
 
   const bounds = [];
-  stops.forEach((stop, index) => {
+  const routePoints = [];
+
+  // Add user location marker
+  if (data.user_latitude && data.user_longitude) {
+    const userCoords = [data.user_latitude, data.user_longitude];
+    bounds.push(userCoords);
+    routePoints.push(userCoords);
+    const userIcon = leafletApi.divIcon({
+      className: "map-marker user-marker",
+      html: `<span>★</span>`,
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+    });
+    const userMarker = leafletApi.marker(userCoords, { icon: userIcon });
+    userMarker.bindPopup(`<strong>Вы здесь</strong>`);
+    markersLayer.addLayer(userMarker);
+  }
+
+  data.stops.forEach((stop, index) => {
     const coords = [stop.latitude, stop.longitude];
     bounds.push(coords);
+    routePoints.push(coords);
     const icon = leafletApi.divIcon({
       className: "map-marker",
       html: `<span>${index + 1}</span>`,
@@ -104,9 +123,15 @@ function renderMap(stops) {
     markersLayer.addLayer(marker);
   });
 
+  // Add polyline for the route
+  if (routePoints.length > 1) {
+    const polyline = leafletApi.polyline(routePoints, { color: '#6366f1', weight: 5 });
+    markersLayer.addLayer(polyline);
+  }
+
   mapNode.hidden = false;
   mapNode.classList.add("visible");
-  mapInstance.fitBounds(bounds, { padding: [30, 30] });
+  mapInstance.fitBounds(bounds, { padding: [50, 50] });
   setTimeout(() => mapInstance.invalidateSize(), 150);
 }
 
@@ -140,7 +165,7 @@ function renderItinerary(data) {
     notesList.replaceChildren();
   }
 
-  renderMap(data.stops);
+  renderMap(data);
 
   if (feedbackForm) {
     feedbackForm.hidden = false;

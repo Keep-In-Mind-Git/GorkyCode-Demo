@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from itertools import permutations
 from typing import Iterable, List, Optional, Sequence, Tuple
 
 from ..models import ItineraryResponse, ItineraryStop, Place
@@ -89,6 +90,8 @@ class ItineraryPlanner:
             total_duration_minutes=round(total_minutes),
             stops=itinerary_stops,
             notes=warnings or None,
+            user_latitude=user_coords[0],
+            user_longitude=user_coords[1],
         )
         return response, warnings
 
@@ -229,7 +232,6 @@ class ItineraryPlanner:
             for place in popular[:20]
         ]
 
-    # TODO: improve point
     def _build_route(
         self,
         candidates: List[Candidate],
@@ -237,28 +239,46 @@ class ItineraryPlanner:
         available_hours: float,
     ) -> List[Candidate]:
         available_minutes = available_hours * 60
-        route: List[Candidate] = []
-        current_coords = user_coords
-        time_budget = available_minutes
-
-        for candidate in candidates:
-            if len(route) >= MAX_STOPS:
+        pool = candidates[:7]
+        best_route = []
+        min_total_time = float("inf")
+        for num_stops in range(min(MAX_STOPS, len(pool)), MIN_STOPS - 1, -1):
+            for combo in permutations(pool, num_stops):
+                current_coords = user_coords
+                current_time = 0
+                for candidate in combo:
+                    travel_time = walking_minutes(
+                        haversine_km(
+                            current_coords[0],
+                            current_coords[1],
+                            candidate.place.latitude,
+                            candidate.place.longitude,
+                        )
+                    )
+                    current_time += travel_time + candidate.place.estimated_visit_minutes
+                    current_coords = (
+                        candidate.place.latitude,
+                        candidate.place.longitude,
+                    )
+                if current_time <= available_minutes and current_time < min_total_time:
+                    min_total_time = current_time
+                    best_route = list(combo)
+            if best_route:
                 break
+        if not best_route and candidates:
+            first_candidate = candidates[0]
             travel = walking_minutes(
                 haversine_km(
-                    current_coords[0],
-                    current_coords[1],
-                    candidate.place.latitude,
-                    candidate.place.longitude,
+                    user_coords[0],
+                    user_coords[1],
+                    first_candidate.place.latitude,
+                    first_candidate.place.longitude,
                 )
             )
-            cost = travel + candidate.place.estimated_visit_minutes
-            if cost <= time_budget or not route:
-                route.append(candidate)
-                current_coords = (candidate.place.latitude, candidate.place.longitude)
-                time_budget = max(0.0, time_budget - cost)
-
-        return route
+            cost = travel + first_candidate.place.estimated_visit_minutes
+            if cost <= available_minutes:
+                return [first_candidate]
+        return best_route
 
     def _schedule(
         self,
